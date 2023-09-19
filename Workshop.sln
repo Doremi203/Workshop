@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# 
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C1A9E27A-7B5A-434C-A87B-09297A8B1126}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workshop.Api", "src\Workshop.Api\Workshop.Api.csproj", "{A51E9DF7-6A27-400A-9333-4520BE49087B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A51E9DF7-6A27-400A-9333-4520BE49087B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A51E9DF7-6A27-400A-9333-4520BE49087B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A51E9DF7-6A27-400A-9333-4520BE49087B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A51E9DF7-6A27-400A-9333-4520BE49087B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A51E9DF7-6A27-400A-9333-4520BE49087B} = {C1A9E27A-7B5A-434C-A87B-09297A8B1126}
+	EndGlobalSection
+EndGlobal
