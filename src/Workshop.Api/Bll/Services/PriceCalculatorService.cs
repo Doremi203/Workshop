@@ -90,4 +90,9 @@ public class PriceCalculatorService : IPriceCalculatorService
 
         return mappedLog;
     }
+
+    public void DeleteLogs()
+    {
+        _storageRepository.DeleteAll();
+    }
 }

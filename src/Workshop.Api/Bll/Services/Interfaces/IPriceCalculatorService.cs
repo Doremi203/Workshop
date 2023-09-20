@@ -4,7 +4,8 @@ namespace Workshop.Api.Bll.Services.Interfaces;
 
 public interface IPriceCalculatorService
 {
-    public double CalculatePrice(GoodModel[] goods, int? distance = null);
+    double CalculatePrice(GoodModel[] goods, int? distance = null);
     
-    public CalculationLogModel[] QueryLog(int takeCount);
+    CalculationLogModel[] QueryLog(int takeCount);
+    void DeleteLogs();
 }

@@ -46,4 +46,11 @@ public class DeliveryPriceController : ControllerBase
 
         return mappedLog;
     }
+    
+    [HttpPost("delete-history")]
+    public DeleteHistoryResponse DeleteHistory(DeleteHistoryRequest request)
+    {
+        _priceCalculatorService.DeleteLogs();
+        return new DeleteHistoryResponse();
+    }
 }
