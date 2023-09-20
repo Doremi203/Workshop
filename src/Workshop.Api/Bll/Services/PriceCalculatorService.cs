@@ -41,17 +41,16 @@ public class PriceCalculatorService : IPriceCalculatorService
         var finalPrice = distance.HasValue
             ? resultPrice * distance.Value
             : resultPrice;
-        
-        _analyticsService.UpdateMaxVolumeAndDistanceForLargest(goods, distance);
-        _analyticsService.UpdateMaxWeightAndDistanceForHeaviest(goods, distance);
-        _analyticsService.UpdateOverallPriceAndGoodsCount(finalPrice, goods.Length);
 
         _storageRepository.Save(new StorageEntity(
             volume,
             finalPrice,
             DateTime.UtcNow,
             weight,
-            distance));
+            distance,
+            goods.Length,
+            goods.Max(good => good.Weight),
+            goods.Max(good => good.Length * good.Width * good.Height)));
         
         return finalPrice;
     }
