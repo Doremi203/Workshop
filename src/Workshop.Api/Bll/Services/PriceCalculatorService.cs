@@ -7,9 +7,13 @@ namespace Workshop.Api.Bll.Services;
 
 public class PriceCalculatorService : IPriceCalculatorService
 {
-    private readonly IStorageRepository _storageRepository;
     private const double VolumeRatio = 3.27d;
-    private const int ConversionRatioMmToCm = 1000;
+    private const double WeightRatio = 1.34d;
+    
+    private const double ConversionRatioMmToCm = 0.001d;
+    private const int ConversionRatioKgToGr = 1000;
+    
+    private readonly IStorageRepository _storageRepository;
 
     public PriceCalculatorService(
         IStorageRepository storageRepository
@@ -25,17 +29,38 @@ public class PriceCalculatorService : IPriceCalculatorService
             throw new ArgumentException("Goods must not be empty.");
         }
         
-        var volume = goods
-            .Sum(good => good.Length * good.Width * good.Height);
-        
-        var price = VolumeRatio * volume / ConversionRatioMmToCm;
+        var volumePrice = CalculatePriceByVolume(goods, out var volume);
+
+        var weightPrice = CalculatePriceByWeight(goods, out var weight);
+
+        var finalPrice = Math.Max(volumePrice, weightPrice);
 
         _storageRepository.Save(new StorageEntity(
             volume,
-            price,
-            DateTime.UtcNow));
+            finalPrice,
+            DateTime.UtcNow,
+            weight));
         
-        return price;
+        return finalPrice;
+    }
+
+    private static double CalculatePriceByWeight(GoodModel[] goods, out double weightInKg)
+    {
+        weightInKg = goods
+            .Where(good => good.Weight.HasValue)
+            .Sum(good => good.Weight!.Value);
+
+        var weightPrice = WeightRatio * weightInKg * ConversionRatioKgToGr;
+        return weightPrice;
+    }
+
+    private static double CalculatePriceByVolume(GoodModel[] goods, out int volume)
+    {
+        volume = goods
+            .Sum(good => good.Length * good.Width * good.Height);
+
+        var volumePrice = VolumeRatio * volume * ConversionRatioMmToCm;
+        return volumePrice;
     }
 
     public CalculationLogModel[] QueryLog(int takeCount)
@@ -53,7 +78,8 @@ public class PriceCalculatorService : IPriceCalculatorService
         var mappedLog = log
             .Select(entity => new CalculationLogModel(
                 entity.Volume,
-                entity.Price))
+                entity.Price,
+                entity.Weight))
             .ToArray();
 
         return mappedLog;
