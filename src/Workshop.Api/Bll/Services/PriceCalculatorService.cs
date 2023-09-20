@@ -14,12 +14,15 @@ public class PriceCalculatorService : IPriceCalculatorService
     private const int ConversionRatioKgToGr = 1000;
     
     private readonly IStorageRepository _storageRepository;
+    private readonly IAnalyticsService _analyticsService;
 
     public PriceCalculatorService(
-        IStorageRepository storageRepository
+        IStorageRepository storageRepository,
+        IAnalyticsService analyticsService
         )
     {
         _storageRepository = storageRepository;
+        _analyticsService = analyticsService;
     }
     
     public double CalculatePrice(GoodModel[] goods, int? distance = null)
@@ -38,10 +41,14 @@ public class PriceCalculatorService : IPriceCalculatorService
         var finalPrice = distance.HasValue
             ? resultPrice * distance.Value
             : resultPrice;
+        
+        _analyticsService.UpdateMaxVolumeAndDistanceForLargest(goods, distance);
+        _analyticsService.UpdateMaxWeightAndDistanceForHeaviest(goods, distance);
+        _analyticsService.UpdateOverallPriceAndGoodsCount(finalPrice, goods.Length);
 
         _storageRepository.Save(new StorageEntity(
             volume,
-            resultPrice,
+            finalPrice,
             DateTime.UtcNow,
             weight,
             distance));
