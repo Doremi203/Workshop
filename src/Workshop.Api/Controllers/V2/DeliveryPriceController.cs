@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Workshop.Api.Bll.Models;
 using Workshop.Api.Bll.Services.Interfaces;
-using Workshop.Api.Requests.V1;
-using Workshop.Api.Responses.V1;
+using Workshop.Api.Requests.V2;
+using Workshop.Api.Responses.V2;
 
-namespace Workshop.Api.Controllers.V1;
+namespace Workshop.Api.Controllers.V2;
 
 [ApiController]
-[Route("v1/[controller]")]
+[Route("v2/[controller]")]
 public class DeliveryPriceController : ControllerBase
 {
     private readonly IPriceCalculatorService _priceCalculatorService;
@@ -28,7 +28,7 @@ public class DeliveryPriceController : ControllerBase
                     good.Length,
                     good.Width,
                     good.Height,
-                    null))
+                    good.Weight))
                 .ToArray());
         return new CalculateResponse(result);
     }
@@ -40,7 +40,7 @@ public class DeliveryPriceController : ControllerBase
 
         var mappedLog = log
             .Select(model => new GetHistoryResponse(
-                new CargoResponse(model.Volume),
+                new CargoResponse(model.Volume, model.Weight),
                 model.Price))
             .ToArray();
 
