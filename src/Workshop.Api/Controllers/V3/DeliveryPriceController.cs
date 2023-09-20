@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Workshop.Api.Bll.Models;
 using Workshop.Api.Bll.Services.Interfaces;
-using Workshop.Api.Requests.V1;
-using Workshop.Api.Responses.V1;
+using Workshop.Api.Requests.V3;
+using Workshop.Api.Responses.V3;
 
-namespace Workshop.Api.Controllers.V1;
+namespace Workshop.Api.Controllers.V3;
 
 [ApiController]
-[Route("v1/[controller]")]
+[Route("v3/[controller]")]
 public class DeliveryPriceController : ControllerBase
 {
     private readonly IPriceCalculatorService _priceCalculatorService;
@@ -28,8 +28,8 @@ public class DeliveryPriceController : ControllerBase
                     good.Length,
                     good.Width,
                     good.Height,
-                    null))
-                .ToArray());
+                    good.Weight))
+                .ToArray(), request.Distance);
         return new CalculateResponse(result);
     }
     
@@ -40,17 +40,10 @@ public class DeliveryPriceController : ControllerBase
 
         var mappedLog = log
             .Select(model => new GetHistoryResponse(
-                new CargoResponse(model.Volume),
-                model.Price))
+                new CargoResponse(model.Volume, model.Weight),
+                model.Price, model.Distance))
             .ToArray();
 
         return mappedLog;
-    }
-    
-    [HttpPost("delete-history")]
-    public DeleteHistoryResponse DeleteHistory(DeleteHistoryRequest request)
-    {
-        _priceCalculatorService.DeleteLogs();
-        return new DeleteHistoryResponse();
     }
 }

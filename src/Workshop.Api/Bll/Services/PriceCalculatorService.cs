@@ -22,7 +22,7 @@ public class PriceCalculatorService : IPriceCalculatorService
         _storageRepository = storageRepository;
     }
     
-    public double CalculatePrice(GoodModel[] goods)
+    public double CalculatePrice(GoodModel[] goods, int? distance = null)
     {
         if (!goods.Any())
         {
@@ -33,13 +33,18 @@ public class PriceCalculatorService : IPriceCalculatorService
 
         var weightPrice = CalculatePriceByWeight(goods, out var weight);
 
-        var finalPrice = Math.Max(volumePrice, weightPrice);
+        var resultPrice = Math.Max(volumePrice, weightPrice);
+        
+        var finalPrice = distance.HasValue
+            ? resultPrice * distance.Value
+            : resultPrice;
 
         _storageRepository.Save(new StorageEntity(
             volume,
-            finalPrice,
+            resultPrice,
             DateTime.UtcNow,
-            weight));
+            weight,
+            distance));
         
         return finalPrice;
     }
@@ -50,7 +55,7 @@ public class PriceCalculatorService : IPriceCalculatorService
             .Where(good => good.Weight.HasValue)
             .Sum(good => good.Weight!.Value);
 
-        var weightPrice = WeightRatio * weightInKg * ConversionRatioKgToGr;
+        var weightPrice = WeightRatio * weightInKg;
         return weightPrice;
     }
 
@@ -79,9 +84,15 @@ public class PriceCalculatorService : IPriceCalculatorService
             .Select(entity => new CalculationLogModel(
                 entity.Volume,
                 entity.Price,
-                entity.Weight))
+                entity.Weight,
+                entity.Distance))
             .ToArray();
 
         return mappedLog;
+    }
+
+    public void DeleteLogs()
+    {
+        _storageRepository.DeleteAll();
     }
 }
