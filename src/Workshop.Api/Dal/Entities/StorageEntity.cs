@@ -4,5 +4,6 @@ public record StorageEntity(
     double Volume,
     double Price,
     DateTime At,
-    double? Weight
+    double? Weight,
+    int? Distance
     );
