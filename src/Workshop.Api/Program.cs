@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddScoped<IPriceCalculatorService, PriceCalculatorService>();
 builder.Services.AddSingleton<IStorageRepository, StorageRepository>();
+builder.Services.AddSingleton<IAnalyticsService, AnalyticsService>();
 
 var app = builder.Build();
 

@@ -11,12 +11,15 @@ namespace Workshop.Api.Controllers.V1;
 public class DeliveryPriceController : ControllerBase
 {
     private readonly IPriceCalculatorService _priceCalculatorService;
+    private readonly IAnalyticsService _analyticsService;
 
     public DeliveryPriceController(
-        IPriceCalculatorService priceCalculatorService
+        IPriceCalculatorService priceCalculatorService,
+        IAnalyticsService analyticsService
         )
     {
         _priceCalculatorService = priceCalculatorService;
+        _analyticsService = analyticsService;
     }
     
     [HttpPost("calculate")]
@@ -52,5 +55,17 @@ public class DeliveryPriceController : ControllerBase
     {
         _priceCalculatorService.DeleteLogs();
         return new DeleteHistoryResponse();
+    }
+    
+    [HttpPost("reports/01")]
+    public GetAnalyticsResponse GetAnalytics(GetAnalyticsRequest request)
+    {
+        var analytics = _analyticsService.GetAnalytics();
+        return new GetAnalyticsResponse(
+            analytics.GoodMostWeight,
+            analytics.GoodMostVolume, 
+            analytics.DistanceForGoodWithMostWeight,
+            analytics.DistanceForGoodWithMostVolume,
+            analytics.AveragePriceByGoodsCount);
     }
 }
