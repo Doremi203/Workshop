@@ -55,7 +55,7 @@ public class PriceCalculatorService : IPriceCalculatorService
             .Where(good => good.Weight.HasValue)
             .Sum(good => good.Weight!.Value);
 
-        var weightPrice = WeightRatio * weightInKg * ConversionRatioKgToGr;
+        var weightPrice = WeightRatio * weightInKg;
         return weightPrice;
     }
 
