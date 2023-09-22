@@ -5,5 +5,8 @@ public record StorageEntity(
     double Price,
     DateTime At,
     double? Weight,
-    int? Distance
+    int? Distance,
+    int GoodsCount,
+    double? MaxWeight,
+    double MaxVolume
     );
