@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using Workshop.Api.Bll.Models;
 using Workshop.Api.Bll.Services.Interfaces;
 using Workshop.Api.Dal.Entities;
@@ -7,22 +8,22 @@ namespace Workshop.Api.Bll.Services;
 
 public class PriceCalculatorService : IPriceCalculatorService
 {
-    private const double VolumeRatio = 3.27d;
-    private const double WeightRatio = 1.34d;
+    private readonly double _volumeToPriceRatio;
+    private readonly double _weightToPriceRatio;
     
     private const double ConversionRatioMmToCm = 0.001d;
     private const int ConversionRatioKgToGr = 1000;
     
     private readonly IStorageRepository _storageRepository;
-    private readonly IAnalyticsService _analyticsService;
 
     public PriceCalculatorService(
-        IStorageRepository storageRepository,
-        IAnalyticsService analyticsService
+        IOptionsSnapshot<PriceCalculatorOptions> options,
+        IStorageRepository storageRepository
         )
     {
+        _volumeToPriceRatio = options.Value.VolumeToPriceRatio;
+        _weightToPriceRatio = options.Value.WeightToPriceRatio;
         _storageRepository = storageRepository;
-        _analyticsService = analyticsService;
     }
     
     public double CalculatePrice(GoodModel[] goods, int? distance = null)
@@ -55,22 +56,22 @@ public class PriceCalculatorService : IPriceCalculatorService
         return finalPrice;
     }
 
-    private static double CalculatePriceByWeight(GoodModel[] goods, out double weightInKg)
+    private double CalculatePriceByWeight(GoodModel[] goods, out double weightInKg)
     {
         weightInKg = goods
             .Where(good => good.Weight.HasValue)
             .Sum(good => good.Weight!.Value);
 
-        var weightPrice = WeightRatio * weightInKg;
+        var weightPrice = _weightToPriceRatio * weightInKg;
         return weightPrice;
     }
 
-    private static double CalculatePriceByVolume(GoodModel[] goods, out int volume)
+    private double CalculatePriceByVolume(GoodModel[] goods, out int volume)
     {
         volume = goods
             .Sum(good => good.Length * good.Width * good.Height);
 
-        var volumePrice = VolumeRatio * volume * ConversionRatioMmToCm;
+        var volumePrice = _volumeToPriceRatio * volume * ConversionRatioMmToCm;
         return volumePrice;
     }
 
