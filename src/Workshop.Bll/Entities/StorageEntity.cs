@@ -1,4 +1,4 @@
-namespace Workshop.Api.Dal.Entities;
+namespace Workshop.Bll.Entities;
 
 public record StorageEntity(
     double Volume,

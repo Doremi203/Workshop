@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using Workshop.Api.Bll.Models;
-using Workshop.Api.Requests.V3;
-using Workshop.Api.Responses.V3;
+using Workshop.Api.Requests.V4;
+using Workshop.Api.Responses.V4;
 using Workshop.Bll.Services.Interfaces;
 
-namespace Workshop.Api.Controllers.V3;
+namespace Workshop.Api.Controllers.V4;
 
 [ApiController]
-[Route("v3/[controller]")]
+[Route("v4/[controller]")]
 public class DeliveryPriceController : ControllerBase
 {
     private readonly IPriceCalculatorService _priceCalculatorService;
@@ -20,17 +19,12 @@ public class DeliveryPriceController : ControllerBase
     }
     
     [HttpPost("calculate")]
-    public CalculateResponse Calculate(CalculateRequest request)
+    public async Task<CalculateResponse> Calculate(
+        CalculateRequest request,
+        CancellationToken cancellationToken)
     {
-        var result = _priceCalculatorService.CalculatePrice(
-            request.Goods
-                .Select(good => new GoodModel(
-                    good.Length,
-                    good.Width,
-                    good.Height,
-                    good.Weight))
-                .ToArray(), request.Distance);
-        return new CalculateResponse(result);
+        await Task.CompletedTask;
+        throw new NotImplementedException();
     }
     
     [HttpPost("get-history")]

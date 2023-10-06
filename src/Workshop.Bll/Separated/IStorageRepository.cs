@@ -1,6 +1,6 @@
-using Workshop.Api.Dal.Entities;
+using Workshop.Bll.Entities;
 
-namespace Workshop.Api.Dal.Repositories.Interfaces;
+namespace Workshop.Bll.Separated;
 
 public interface IStorageRepository
 {

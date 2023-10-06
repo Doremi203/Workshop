@@ -1,8 +1,8 @@
 using Workshop.Api.Bll.Models;
-using Workshop.Api.Bll.Services.Interfaces;
-using Workshop.Api.Dal.Repositories.Interfaces;
+using Workshop.Bll.Separated;
+using Workshop.Bll.Services.Interfaces;
 
-namespace Workshop.Api.Bll.Services;
+namespace Workshop.Bll.Services;
 
 public class AnalyticsService : IAnalyticsService
 {

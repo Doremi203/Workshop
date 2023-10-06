@@ -1,6 +1,6 @@
 using Workshop.Api.Bll.Models;
 
-namespace Workshop.Api.Bll.Services.Interfaces;
+namespace Workshop.Bll.Services.Interfaces;
 
 public interface IAnalyticsService
 {
